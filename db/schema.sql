@@ -4,26 +4,24 @@ CREATE DATABASE employeeTracker_db;
 Use employeeTracker_db;
 
 CREATE TABLE department (
-    id: INT NOT NULL,
-    name: VARCHAR (30) NOT NULL,
-    PRIMARY KEY (id)
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(30) UNIQUE NOT NULL,
 );
 
 CREATE TABLE role (
-    id: INT PRIMARY KEY,
-    title: VARCHAR(30),
-    salary: DECIMAL,
-    role_id: INT,
-    FOREIGN KEY (role_id),
-    REFERENCES department(id)
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(30) UNIQUE NOT NULL,
+    salary UNSIGNED DECIMAL,
+    department_id UNSIGNED INT,
+    FOREIGN KEY (department_id) REFERENCES department(id),
 );
 
 CREATE TABLE employee (
-    id: INT PRIMARY KEY,
-    first_name: VARCHAR(30),
-    last_name: VARCHAR(30),
-    role_id: INT,
-    manager_id: INT,
-    FOREIGN KEY (employee_id),
-    REFERENCES role (id)
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(30) NOT NULL,
+    last_name VARCHAR(30) NOT NULL,
+    role_id UNSIGNED INT NOT NULL,
+    FOREIGN KEY (role_id) REFERENCES role (id),
+    manager_id UNSIGNED INT,
+    FOREIGN KEY (manager_id) REFERENCES employee (id),
 );
