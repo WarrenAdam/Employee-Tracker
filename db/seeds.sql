@@ -36,4 +36,4 @@ VALUES
     ('Jung', 'Son', 5, NULL),
     ('James', 'Carter', 6, 5),
     ('Jack', 'Street', 7, NULL),
-    ('Teddy', 'Appleson', 8, 7),
+    ('Teddy', 'Appleson', 8, 7);
