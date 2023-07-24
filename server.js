@@ -1,6 +1,6 @@
 // requireing npm packages
-const inquirer = require("inquirer");
-const mysql = require("mysql2");
+const inquirer = require('inquirer');
+const mysql = require('mysql2');
 
 // created MySQL connection
 // put user and pass
