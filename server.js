@@ -6,8 +6,8 @@ const mysql = require('mysql2');
 // put user and pass
 const connection = mysql.createConnection({
     host: "localhost",
-    user: "",
-    password: "",
+    user: "root",
+    password: "Atrain1994",
     database: "employeeTracker_db",
 });
 
@@ -82,7 +82,7 @@ function beginApp() {
 
 // function to view all departments
 function viewDepartments() {
-    const query = "SELECT * FROM departments";
+    const query = "SELECT * FROM department";
     connection.query(query, (err, res) => {
         if (err) throw err;
         console.table(res);
@@ -93,7 +93,7 @@ function viewDepartments() {
 
 // function to view all roles
 function viewRoles() {
-    const query = "SELECT roles.title, roles.id, departments.department_name, roles.salary from roles join departments on roles.department_id = departments.id";
+    const query = "SELECT role.title, role.id, department.name, role.salary from role left join department on role.department_id = department.id";
     connection.query(query, (err, res) => {
         if (err) throw err;
         console.table(res);
@@ -105,10 +105,10 @@ function viewRoles() {
 // function to view all employees
 function viewEmployees() {
     const query = `
-    SELECT e.id, e.first_name, e.last_name, r.title, d.department_name, r.salary, CONCAT(m.first_name, ' ', m.last_name) AS manager_name
+    SELECT e.id, e.first_name, e.last_name, r.title, d.name, r.salary, CONCAT(m.first_name, ' ', m.last_name) AS manager_name
     FROM employee e
-    LEFT JOIN roles r ON e.role_id = r.id
-    LEFT JOIN departments d ON r.department_id = d.id
+    LEFT JOIN role r ON e.role_id = r.id
+    LEFT JOIN department d ON r.department_id = d.id
     LEFT JOIN employee m ON e.manager_id = m.id;
     `;
     connection.query(query, (err, res) => {
@@ -129,7 +129,7 @@ function addDepartment() {
         })
         .then((answer) => {
             console.log(answer.name);
-            const query = `INSERT INTO departments (department_name) VALUES ("${answer.name}")`;
+            const query = `INSERT INTO department (name) VALUES ("${answer.name}")`;
             connection.query(query, (err, res) => {
                 if (err) throw err;
                 console.log(`Added department ${answer.name} to the database!`);
@@ -142,7 +142,7 @@ function addDepartment() {
 
 // function to add a role to a department
 function addRole() {
-    const query = "SELECT * FROM departments";
+    const query = "SELECT * FROM department";
     connection.query(query, (err, res) => {
         if (err) throw err;
         inquirer
@@ -162,21 +162,21 @@ function addRole() {
                     name: "department",
                     message: "Select the department for the new role:",
                     choices: res.map(
-                        (department) => department.department_name
+                        (department) => {return {name: department.name, value: department.id}}
                     ),
                 },
             ])
             .then((answers) => {
-                const department = res.find(
-                    (department) => department.name === answers.department
-                );
-                const query = "INSERT INTO roles SET ?";
+                // const department = res.find(
+                    // (department) => department.name === answers.department
+                // );
+                const query = "INSERT INTO role SET ?";
                 connection.query(
                     query,
                     {
                         title: answers.title,
                         salary: answers.salary,
-                        department_id: department,
+                        department_id: answers.department,
                     },
                     (err, res) => {
                         if (err) throw err;
@@ -194,7 +194,7 @@ function addRole() {
 // Function to add an employee
 function addEmployee() {
     
-    connection.query("SELECT id, title FROM roles", (error, results) => {
+    connection.query("SELECT id, title FROM role", (error, results) => {
         if (error) {
             console.error(error);
             return;
@@ -278,7 +278,7 @@ function addEmployee() {
 
 // Function to add a Manager
 function addAManager() {
-    const departmentList = "SELECT * FROM departments";
+    const departmentList = "SELECT * FROM department";
     const employeeList = "SELECT * FROM employee";
 
     connection.query(departmentList, (err, resDepartments) => {
@@ -292,7 +292,7 @@ function addAManager() {
                         name: "department",
                         message: "Select the department:",
                         choices: resDepartments.map(
-                            (department) => department.department_name
+                            (department) => {return {name: department.name, value: department.id}}
                         ),
                     },
                     {
@@ -301,7 +301,7 @@ function addAManager() {
                         message: "Select the employee to add a manager to:",
                         choices: resEmployees.map(
                             (employee) =>
-                                `${employee.first_name} ${employee.last_name}`
+                                {return {name:`${employee.first_name} ${employee.last_name}` , value: employee.id}}
                         ),
                     },
                     {
@@ -310,34 +310,21 @@ function addAManager() {
                         message: "Select the employee's manager:",
                         choices: resEmployees.map(
                             (employee) =>
-                                `${employee.first_name} ${employee.last_name}`
+                                {return {name:`${employee.first_name} ${employee.last_name}` , value: employee.id}}
                         ),
                     },
                 ])
                 .then((answers) => {
-                    const department = resDepartments.find(
-                        (department) =>
-                            department.department_name === answers.department
-                    );
-                    const employee = resEmployees.find(
-                        (employee) =>
-                            `${employee.first_name} ${employee.last_name}` ===
-                            answers.employee
-                    );
-                    const manager = resEmployees.find(
-                        (employee) =>
-                            `${employee.first_name} ${employee.last_name}` ===
-                            answers.manager
-                    );
+                    
                     const query =
-                        "UPDATE employee SET manager_id = ? WHERE id = ? AND role_id IN (SELECT id FROM roles WHERE department_id = ?)";
+                        "UPDATE employee SET manager_id = ? WHERE id = ? AND role_id IN (SELECT id FROM role WHERE department_id = ?)";
                     connection.query(
                         query,
-                        [manager.id, employee.id, department.id],
+                        [answers.manager, answers.employee, answers.department],
                         (err, res) => {
                             if (err) throw err;
                             console.log(
-                                `Added manager ${manager.first_name} ${manager.last_name} to employee ${employee.first_name} ${employee.last_name} in department ${department.department_name}!`
+                                `Added manager ${manager.first_name} ${manager.last_name} to employee ${employee.first_name} ${employee.last_name} in department ${department.name}!`
                             );
                             
                             beginApp();
@@ -665,6 +652,7 @@ function viewTotalSalaryDepartment() {
 process.on("exit", () => {
     connection.end();
 });
+beginApp();
 
 
 

@@ -7,22 +7,22 @@ VALUES ('Finance'),
 
 
 
-INSERT INTO role (title, salary)
+INSERT INTO role (title, salary, department_id)
 VALUES 
-       ('Head Service Manager',62000),
-       ('Customer Service rep', 60000),
+       ('Head Service Manager',62000, 5),
+       ('Customer Service rep', 60000, 5),
        
 
-       ('Senior Sales rep', 55000),
-       ('Junior Sales rep', 40000),
+       ('Senior Sales rep', 55000, 3),
+       ('Junior Sales rep', 40000, 3),
 
       
-       ('Senior Finance rep', 85000),
-       ('Junior Finance rep', 75000),
+       ('Senior Finance rep', 85000, 1),
+       ('Junior Finance rep', 75000, 1),
 
       
-       ('Head Mechanic', 65000),
-       ('Mechanic Apprentice', 37000);
+       ('Head Mechanic', 65000, 2),
+       ('Mechanic Apprentice', 37000, 2);
 
 
 
