@@ -43,11 +43,11 @@ THEN I am prompted to select an employee to update and their new role and this i
 In order to run the application, the user must install run node server.js.
 
 ## Usage
-
+Video: walthrough: https://watch.screencastify.com/v/UneOv6AoPbz5q7HKNrI2
 
 
 ## Credits
 
-I would like to thank Ashton Foston and askBCS for help with giving me insight to writing the code and for debugging code.
+I would like to thank Ashton Foston, Alexis San Javier and askBCS for help with giving me insight to writing the code and for debugging code.
 
 
