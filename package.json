@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "seed": "seeds.sql"
+    "seed": "node db/seeds.sql",
+    "start": "node db/schema.sql"
   },
   "repository": {
     "type": "git",
