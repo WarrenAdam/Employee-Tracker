@@ -324,7 +324,7 @@ function addAManager() {
                         (err, res) => {
                             if (err) throw err;
                             console.log(
-                                `Added manager ${manager.first_name} ${manager.last_name} to employee ${employee.first_name} ${employee.last_name} in department ${department.name}!`
+                                `Added manager [${manager.first_name} ${manager.last_name}] to employee ${employee.first_name} ${employee.last_name} in department ${department.name}!`
                             );
                             
                             beginApp();
@@ -338,8 +338,8 @@ function addAManager() {
 // function to update an employee role
 function updateEmployeeRole() {
     const queryEmployees =
-        "SELECT employee.id, employee.first_name, employee.last_name, roles.title FROM employee LEFT JOIN roles ON employee.role_id = roles.id";
-    const queryRoles = "SELECT * FROM roles";
+        "SELECT employee.id, employee.first_name, employee.last_name, role.title FROM employee LEFT JOIN role ON employee.role_id = roles.id";
+    const queryRoles = "SELECT * FROM role";
     connection.query(queryEmployees, (err, resEmployees) => {
         if (err) throw err;
         connection.query(queryRoles, (err, resRoles) => {
